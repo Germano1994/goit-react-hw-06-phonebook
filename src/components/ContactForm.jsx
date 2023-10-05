@@ -21,20 +21,20 @@ const ContactForm = ({ contacts, onAddContact }) => {
     number: '',
   };
 
-  const handleSubmit = (values, { resetForm }) => {
-    if (contacts.some(contact => contact.name.toLowerCase() === values.name.toLowerCase())) {
-      alert('Contact with this name already exists!');
-    } else {
-      onAddContact({ id: uuidv4(), ...values });
-      resetForm();
-    }
-  };
-
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
-      onSubmit={handleSubmit}
+      onSubmit={(values, { resetForm }) => {
+        const isContactExists = contacts && contacts.some(contact => contact.name.toLowerCase() === values.name.toLowerCase());
+
+        if (isContactExists) {
+          alert('Contact with this name already exists!');
+        } else {
+          onAddContact({ id: uuidv4(), ...values });
+          resetForm();
+        }
+      }}
     >
       <Form className={styles.form}>
         <label className={styles.label}>

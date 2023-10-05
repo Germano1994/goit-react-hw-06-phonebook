@@ -1,10 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  addContact,
-  deleteContact,
-  setFilter,
-} from './redux/contactsSlice';
+import { addContact, deleteContact } from './redux/contactsSlice';
 import ContactForm from './ContactForm';
 import ContactList from './ContactList';
 import Filter from './Filter';
@@ -12,7 +8,6 @@ import Filter from './Filter';
 function App() {
   const dispatch = useDispatch();
   const contacts = useSelector(state => state.contacts.list);
-  const filter = useSelector(state => state.contacts.filter);
 
   useEffect(() => {
     const savedContacts = localStorage.getItem('contacts');
@@ -33,22 +28,14 @@ function App() {
     dispatch(deleteContact(id));
   };
 
-  const handleFilterChange = event => {
-    dispatch(setFilter(event.target.value));
-  };
-
-  const filteredContacts = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(filter.toLowerCase())
-  );
-
   return (
     <div>
       <h1>Phonebook</h1>
       <ContactForm onAddContact={handleAddContact} />
 
       <h2>Contacts</h2>
-      <Filter value={filter} onChange={handleFilterChange} />
-      <ContactList contacts={filteredContacts} onDeleteContact={handleDeleteContact} />
+      <Filter />
+      <ContactList contacts={contacts} onDeleteContact={handleDeleteContact} />
     </div>
   );
 }
