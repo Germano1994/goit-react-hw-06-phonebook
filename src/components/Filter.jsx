@@ -1,10 +1,8 @@
-
 import styles from './Filter.module.css';
-
 import React from "react";
 import { useDispatch } from "react-redux";
 import { setFilter } from "../components/redux/contactsSlice.js";
-// import PropTypes from "prop-types";
+
 
 const Filter = ({ value }) => {
   const dispatch = useDispatch();
