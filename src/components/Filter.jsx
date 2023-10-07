@@ -1,17 +1,30 @@
-import React from 'react';
+
 import styles from './Filter.module.css';
 
-const Filter = ({ value, onChange }) => (
-  <label className={styles.label}>
-    Filter contacts by name:
-    <input
-      type="text"
-      name="filter"
-      value={value}
-      onChange={onChange}
-      className={styles.input}
-    />
-  </label>
-);
+import React from "react";
+import { useDispatch } from "react-redux";
+import { setFilter } from "../components/redux/contactsSlice.js";
+// import PropTypes from "prop-types";
+
+const Filter = ({ value }) => {
+  const dispatch = useDispatch();
+
+  const handleFilterChange = (event) => {
+    dispatch(setFilter(event.target.value));
+  };
+
+  return (
+    <label className={styles.label}>
+      Filter contacts by name:
+      <input
+        type="text"
+        name="filter"
+        value={value}
+        onChange={handleFilterChange}
+        className={styles.input}
+      />
+    </label>
+  );
+};
 
 export default Filter;
