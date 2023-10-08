@@ -4,6 +4,7 @@ import * as Yup from 'yup';
 import { v4 as uuidv4 } from 'uuid';
 import { useDispatch, useSelector } from 'react-redux';
 import { addContact } from './redux/contactsSlice';
+import styles from './ContactForm.module.css';
 
 const validationSchema = Yup.object().shape({
   name: Yup.string()
@@ -46,30 +47,31 @@ const ContactForm = () => {
     <div>
       <h2>Add Contact</h2>
       <Formik
-        initialValues={initialValues}
-        validationSchema={validationSchema}
-        onSubmit={handleSubmit}
-      >
-        <Form>
-          <label>
-            Name
-            <Field type="text" name="name" />
-            <ErrorMessage name="name" component="div" />
-          </label>
+  initialValues={initialValues}
+  validationSchema={validationSchema}
+  onSubmit={handleSubmit}
+>
+  <Form className={styles.form}>
+    <label className={styles.label}>
+      Name
+      <Field type="text" name="name" className={styles.input} />
+      <ErrorMessage name="name" component="div" className={styles.error} />
+    </label>
 
-          <label>
-            Phone Number
-            <Field type="tel" name="number" inputMode="numeric" />
-            <ErrorMessage name="number" component="div" />
-          </label>
+    <label className={styles.label}>
+      Phone Number
+      <Field type="tel" name="number" inputMode="numeric" className={styles.input} />
+      <ErrorMessage name="number" component="div" className={styles.error} />
+    </label>
 
-          {isDuplicate && (
-            <div className="error-message">Contact with this name already exists!</div>
-          )}
+    {isDuplicate && (
+      <div className={`${styles.error} ${styles.errorMessage}`}>Contact with this name already exists!</div>
+    )}
 
-          <button type="submit">Add Contact</button>
-        </Form>
-      </Formik>
+    <button type="submit" className={styles.button}>Add Contact</button>
+  </Form>
+</Formik>
+
     </div>
   );
 };
