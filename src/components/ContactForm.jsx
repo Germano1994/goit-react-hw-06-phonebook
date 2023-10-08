@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { v4 as uuidv4 } from 'uuid';
-import styles from './ContactForm.module.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { addContact } from '../components/redux/contactsSlice.js';
 
 const validationSchema = Yup.object().shape({
   name: Yup.string()
@@ -15,41 +16,62 @@ const validationSchema = Yup.object().shape({
     .required('Please enter a phone number'),
 });
 
-const ContactForm = ({ contacts, onAddContact }) => {
+const ContactForm = () => {
+  const [isDuplicate, setIsDuplicate] = useState(false);
+  const dispatch = useDispatch();
+
   const initialValues = {
     name: '',
     number: '',
   };
 
-  return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-      onSubmit={(values, { resetForm }) => {
-        const isContactExists = contacts && contacts.some(contact => contact.name.toLowerCase() === values.name.toLowerCase());
+  const contacts = useSelector((state) => state.contacts.contacts);
 
-        if (isContactExists) {
-          alert('Contact with this name already exists!');
-        } else {
-          onAddContact({ id: uuidv4(), ...values });
-          resetForm();
-        }
-      }}
-    >
-      <Form className={styles.form}>
-        <label className={styles.label}>
-          Name
-          <Field type="text" name="name" className={styles.input} />
-          <ErrorMessage name="name" component="div" className={styles.error} />
-        </label>
-        <label className={styles.label}>
-          Phone Number
-          <Field type="tel" name="number" inputMode="numeric" className={styles.input} />
-          <ErrorMessage name="number" component="div" className={styles.error} />
-        </label>
-        <button type="submit" className={styles.button}>Add Contact</button>
-      </Form>
-    </Formik>
+  const handleSubmit = (values, { resetForm }) => {
+  console.log(contacts)
+    const isDuplicateContact = contacts.list.some(
+      (contact) => contact.name.toLowerCase() === values.name.toLowerCase()
+    );
+
+    if (isDuplicateContact) {
+      setIsDuplicate(true);
+    } else {
+      const newContact = { id: uuidv4(), ...values };
+      dispatch(addContact(newContact));
+      resetForm();
+      setIsDuplicate(false);
+    }
+  };
+
+  return (
+    <div>
+      <h2>Add Contact</h2>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
+      >
+        <Form>
+          <label>
+            Name
+            <Field type="text" name="name" />
+            <ErrorMessage name="name" component="div" />
+          </label>
+
+          <label>
+            Phone Number
+            <Field type="tel" name="number" inputMode="numeric" />
+            <ErrorMessage name="number" component="div" />
+          </label>
+
+          {isDuplicate && (
+            <div className="error-message">Contact with this name already exists!</div>
+          )}
+
+          <button type="submit">Add Contact</button>
+        </Form>
+      </Formik>
+    </div>
   );
 };
 

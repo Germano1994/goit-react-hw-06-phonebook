@@ -1,18 +1,28 @@
-import React from "react";
+import React from 'react';
+import ContactListItem from './ContactListItem';
+import { useSelector } from 'react-redux';
 
-const ContactListItem = ({ contact, onDeleteContact }) => {
-    const handleDeleteClick = () => {
-        onDeleteContact(contact.id);
-    };
+const ContactList = () => {
+  const contacts = useSelector((state) => {
+    console.log(state);
+    return state.contacts.contacts
+  });
+  const filter = useSelector((state) => state.contacts.filter);
 
-    return (
-        <li className="list-group-item d-flex justify-content-between align-items-center">
-            {contact.name} - {contact.number}
-            <button className="btn btn-danger btn-sm" onClick={handleDeleteClick}>
-                Delete
-            </button>
-        </li>
-    );
+  const filteredContacts = contacts.filter((contact) =>
+    filter && contact.name.toLowerCase().includes(filter.toLowerCase())
+  );
+
+  return (
+    <div>
+      <h2>Contacts</h2>
+      <ul>
+        {filteredContacts.map((contact) => (
+          <ContactListItem key={contact.id} contact={contact} />
+        ))}
+      </ul>
+    </div>
+  );
 };
 
-export default ContactListItem;
+export default ContactList;
