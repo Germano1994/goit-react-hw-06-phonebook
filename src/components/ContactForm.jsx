@@ -3,7 +3,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { v4 as uuidv4 } from 'uuid';
 import { useDispatch, useSelector } from 'react-redux';
-import { addContact } from '../components/redux/contactsSlice.js';
+import { addContact } from './redux/contactsSlice';
 
 const validationSchema = Yup.object().shape({
   name: Yup.string()
@@ -28,8 +28,7 @@ const ContactForm = () => {
   const contacts = useSelector((state) => state.contacts.contacts);
 
   const handleSubmit = (values, { resetForm }) => {
-  console.log(contacts)
-    const isDuplicateContact = contacts.list.some(
+    const isDuplicateContact = contacts.some(
       (contact) => contact.name.toLowerCase() === values.name.toLowerCase()
     );
 
